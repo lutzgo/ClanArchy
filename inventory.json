@@ -2,6 +2,9 @@
   "machines": {
     "jon": {
       "name": "jon"
+    },
+    "flores": {
+      "name": "flores"
     }
   }
 }
