@@ -1,4 +1,3 @@
-
 {
   imports = [
     # contains your disk format and partitioning configuration.
@@ -9,7 +8,10 @@
     ../../modules/shared.nix
     # enables GNOME desktop (optional)
     ../../modules/gnome.nix
+
+    #stylix.nixosModules.stylix
   ];
+
 
   # This is your user login name.
   users.users.user.name = "lgo";
