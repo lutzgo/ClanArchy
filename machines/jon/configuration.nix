@@ -31,5 +31,8 @@
 
   # Zerotier needs one controller to accept new nodes. Once accepted
   # the controller can be offline and routing still works.
-  clan.core.networking.zerotier.controller.enable = true;
+  clan.core.networking.zerotier.controller = {
+    enable = true;
+    public = true;
+  };
 }

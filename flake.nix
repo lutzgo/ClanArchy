@@ -1,49 +1,58 @@
 {
   description = "Total chaos when no one in the clan follows the rules";
 
-  inputs.clan-core.url = "https://git.clan.lol/clan/clan-core/archive/main.tar.gz";
-  inputs.nixpkgs.follows = "clan-core/nixpkgs";
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
 
-  outputs =
-    { self, clan-core, ... }:
-    let
-      # Usage see: https://docs.clan.lol
-      clan = clan-core.lib.buildClan {
+    # New flake-parts input
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
+
+    clan-core = {
+      url = "git+https://git.clan.lol/clan/clan-core";
+      inputs.nixpkgs.follows = "nixpkgs"; # Needed if your configuration uses nixpkgs unstable.
+      # New
+      inputs.flake-parts.follows = "flake-parts";
+    };
+  };
+
+    outputs = inputs@{ flake-parts, clan-core, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } ({self, pkgs, ...}: {
+      # We define our own systems below. you can still use this to add system specific outputs to your flake.
+      # See: https://flake.parts/getting-started
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
+
+      # import clan-core modules
+      imports = [
+        clan-core.flakeModules.default
+      ];
+      # Define your clan
+      # See: https://docs.clan.lol/reference/nix-api/buildclan/
+      clan = {
+        # Clan wide settings. (Required)
+        meta.name = "ClanArchy"; # Ensure to choose a unique name.
+
+        # Make flake available in modules
+        specialArgs.self = {
+          inherit (self) inputs nixosModules packages;
+        };
         inherit self;
-        # Ensure this is unique among all clans you want to use.
-        meta.name = "ClanArchy";
 
-        # All machines in the ./machines will be imported.
 
-        # Prerequisite: boot into the installer.
-        # See: https://docs.clan.lol/getting-started/installer
-        # local> mkdir -p ./machines/machine1
-        # local> Edit ./machines/<machine>/configuration.nix to your liking.
         machines = {
           # You can also specify additional machines here.
           # somemachine = {
           #  imports = [ ./some-machine/configuration.nix ];
-          # }
         };
       };
-    in
-    {
-      # All machines managed by Clan.
-      inherit (clan) nixosConfigurations clanInternals;
-      # Add the Clan cli tool to the dev shell.
-      # Use "nix develop" to enter the dev shell.
-      devShells =
-        clan-core.inputs.nixpkgs.lib.genAttrs
-          [
-            "x86_64-linux"
-            "aarch64-linux"
-            "aarch64-darwin"
-            "x86_64-darwin"
-          ]
-          (system: {
-            default = clan-core.inputs.nixpkgs.legacyPackages.${system}.mkShell {
-              packages = [ clan-core.packages.${system}.clan-cli ];
-            };
-          });
-    };
+
+        perSystem =
+        { pkgs, inputs', ... }:
+        {
+          devShells.default = pkgs.mkShell { packages = [ inputs'.clan-core.packages.clan-cli ]; };
+        };
+    });
 }
