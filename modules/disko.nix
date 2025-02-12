@@ -3,12 +3,9 @@
   clan-core,
   config,
   ...
-}:
-
-let
+}: let
   suffix = config.clan.core.vars.generators.disk-id.files.diskId.value;
-in
-{
+in {
   imports = [
     clan-core.clanModules.disk-id
   ];
@@ -40,7 +37,7 @@ in
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot";
-                mountOptions = [ "nofail" ];
+                mountOptions = ["nofail"];
               };
             };
             "root" = {

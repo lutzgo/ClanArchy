@@ -1,5 +1,8 @@
-{ config, clan-core, ... }:
 {
+  config,
+  clan-core,
+  ...
+}: {
   imports = [
     # Enables the OpenSSH server for remote access
     clan-core.clanModules.sshd

@@ -1,7 +1,7 @@
-{
+{inputs, ...}: {
   imports = [
     # contains your disk format and partitioning configuration.
-    ../../modules/disko.nix
+    ./disko.nix
     #./disko.nix
     #./initrd.nix
     # this file is shared among all machines
@@ -11,7 +11,6 @@
 
     #stylix.nixosModules.stylix
   ];
-
 
   # This is your user login name.
   users.users.user.name = "lgo";
@@ -30,7 +29,7 @@
   # e.g. > cat ~/.ssh/id_ed25519.pub
   users.users.root.openssh.authorizedKeys.keys = [
     ''
-    ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILXmNe7FQqlHTMVbTCq+GJY52gYq5IadHNwh2ifzsy5H jon
+      ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILXmNe7FQqlHTMVbTCq+GJY52gYq5IadHNwh2ifzsy5H jon
     ''
   ];
 

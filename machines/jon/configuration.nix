@@ -1,5 +1,6 @@
 {
   imports = [
+    #self.nixosModules.shared
     # contains your disk format and partitioning configuration.
     ../../modules/disko.nix
     # this file is shared among all machines
@@ -25,7 +26,7 @@
   # e.g. > cat ~/.ssh/id_ed25519.pub
   users.users.root.openssh.authorizedKeys.keys = [
     ''
-    ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILXmNe7FQqlHTMVbTCq+GJY52gYq5IadHNwh2ifzsy5H jon
+      ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILXmNe7FQqlHTMVbTCq+GJY52gYq5IadHNwh2ifzsy5H jon
     ''
   ];
 

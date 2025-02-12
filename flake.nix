@@ -11,13 +11,29 @@
     clan-core = {
       url = "git+https://git.clan.lol/clan/clan-core";
       inputs.nixpkgs.follows = "nixpkgs"; # Needed if your configuration uses nixpkgs unstable.
-      # New
       inputs.flake-parts.follows = "flake-parts";
     };
+
+    # TODO: Add home-manager and stylix
+    #home-manager = {
+    #  url = "github:nix-community/home-manager";
+    #  inputs.nixpkgs.follows = "nixpkgs";  # Ensure it follows your nixpkgs version
+    #};
+
+    # Style
+    #stylix.url = "github:danth/stylix";
   };
 
-    outputs = inputs@{ flake-parts, clan-core, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } ({self, pkgs, ...}: {
+  outputs = inputs @ {
+    flake-parts,
+    clan-core,
+    ...
+  }:
+    flake-parts.lib.mkFlake {inherit inputs;} ({
+      self,
+      pkgs,
+      ...
+    }: {
       # We define our own systems below. you can still use this to add system specific outputs to your flake.
       # See: https://flake.parts/getting-started
       systems = [
@@ -28,6 +44,8 @@
       # import clan-core modules
       imports = [
         clan-core.flakeModules.default
+        # Shells, shells, shells for different directories and purposes
+        ./Shells
       ];
       # Define your clan
       # See: https://docs.clan.lol/reference/nix-api/buildclan/
@@ -41,7 +59,6 @@
         };
         inherit self;
 
-
         machines = {
           # You can also specify additional machines here.
           # somemachine = {
@@ -49,10 +66,5 @@
         };
       };
 
-        perSystem =
-        { pkgs, inputs', ... }:
-        {
-          devShells.default = pkgs.mkShell { packages = [ inputs'.clan-core.packages.clan-cli ]; };
-        };
     });
 }
