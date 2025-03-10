@@ -8,8 +8,6 @@
     ../../modules/shared.nix
     # enables GNOME desktop (optional)
     ../../modules/gnome.nix
-
-    #stylix.nixosModules.stylix
   ];
 
   # This is your user login name.
