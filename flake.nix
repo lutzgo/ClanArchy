@@ -13,18 +13,11 @@
       inputs.nixpkgs.follows = "nixpkgs"; # Needed if your configuration uses nixpkgs unstable.
       inputs.flake-parts.follows = "flake-parts";
     };
-
-    # GoHome as an input here
-    GoHome = {
-      url = "github:lutzgo/GoHome";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs = inputs @ {
     flake-parts,
     clan-core,
-    GoHome,
     ...
   }:
     flake-parts.lib.mkFlake {inherit inputs;} ({
