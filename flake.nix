@@ -13,15 +13,6 @@
       inputs.nixpkgs.follows = "nixpkgs"; # Needed if your configuration uses nixpkgs unstable.
       inputs.flake-parts.follows = "flake-parts";
     };
-
-    # TODO: Add home-manager and stylix
-    #home-manager = {
-    #  url = "github:nix-community/home-manager";
-    #  inputs.nixpkgs.follows = "nixpkgs";  # Ensure it follows your nixpkgs version
-    #};
-
-    # Style
-    #stylix.url = "github:danth/stylix";
   };
 
   outputs = inputs @ {
@@ -44,8 +35,6 @@
       # import clan-core modules
       imports = [
         clan-core.flakeModules.default
-        # Shells, shells, shells for different directories and purposes
-        ./Shells
       ];
       # Define your clan
       # See: https://docs.clan.lol/reference/nix-api/buildclan/
@@ -65,6 +54,31 @@
           #  imports = [ ./some-machine/configuration.nix ];
         };
       };
+
+      perSystem = {
+    pkgs,
+    inputs',
+    ...
+  }: {
+    devShells.default = pkgs.mkShell {
+      packages = [inputs'.clan-core.packages.clan-cli];
+      buildInputs = with pkgs; [
+        # Development tools
+        git
+        nixpkgs-fmt
+        nil # Nix LSP
+
+        # Documentation tools
+        nodejs
+        ocrmypdf
+        pnpm
+
+        # Additional utilities
+        ripgrep
+        fd
+      ];
+    };
+  };
 
     });
 }
